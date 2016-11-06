@@ -1,15 +1,51 @@
 addons:
   artifacts:
     debug: true
-    paths: [libs.zip, build.zip, testbuild.zip]
-    target_paths: 3d5f18f4-48bc-431c-b920-23e696892b73
-after_success: [chmod -R 777 ./travis/deploy-to-sonatype.sh, ./travis/deploy-to-sonatype.sh]
+    paths:
+    - libs.zip
+    - build.zip
+    - testbuild.zip
+    - jacoco.exec
+    target_paths: 75722478-654f-4810-a37d-3c6a012291fe
+after_success:
+- ' wget --content-disposition http://search.maven.org/remotecontent?filepath=org/jacoco/jacoco/0.7.7.201606060606/jacoco-0.7.7.201606060606.zip '
+- ' unzip -o jacoco-0.7.7.201606060606.zip  '
+- ' cd lib  '
+- ' mv * ../  '
+- ' cd ..  '
+- ' chmod a+x *  '
+- ' cd $PWD  '
+- ' rm  ''jacoco.exec'''
+- ' export JAVA_TOOL_OPTIONS=-javaagent:$PWD/jacocoagent.jar=destfile=$PWD/jacoco.exec,append=true  '
+- ' travis_wait 360 mvn  test -Dmaven.test.failure.ignore=true -Djacoco.skip=true
+  -Dcobertura.skip=true -Dmaven.clover.skip=true -Dmaven.javadoc.skip=true -Drat.skip=true
+  -Drat.ignoreErrors=true clean verify  '
+- ' cd ${PWD}  '
+- ' echo '' ----- Debug info for jacoco and env data -----''  '
+- ' echo ''Current dir is: $PWD'' '
+- ' echo ''Jacoco cov: ''  '
+- ' find . -name ''*.exec''  '
+- ' echo '' ----------------------------------------------'' '
+- ./df-build.sh
+before_install: []
+branches: ''
+cache:
+  directories:
+  - $HOME/.m2
 env:
   global:
-  - {secure: SGO9NiZHdPlAwm9qHirXz5lCx1462Ch/MgvKK9TGJDzsmea414TRucHCmL17a+shsLtt/iXE4whikKBcTY4b493wtXYbC5EzZrVb5QKA1XEdjfgbnESov6DLVS85waO/K0GBScmyu02YOC/0ZCShcXrQZpJ0ssK9eMM/jXdTLsQ=}
-  - {secure: YGgXcGko6RzcA242xa/AMXp0/kujud8QeJxCOQFo1Tt00hSt1Ew8r/LY1h4pW7KB/jmYrebHkMHrTTp/NXN9sjjnWj61NWLwIAEUjEJjJmoZYpaWIar9Aw3QZvp7fngslEp2uJ/v61x2YfCygdCQKlpNEU7GEJMlbC5C/sz7rPo=}
-jdk: [oraclejdk7]
+  - secure: SGO9NiZHdPlAwm9qHirXz5lCx1462Ch/MgvKK9TGJDzsmea414TRucHCmL17a+shsLtt/iXE4whikKBcTY4b493wtXYbC5EzZrVb5QKA1XEdjfgbnESov6DLVS85waO/K0GBScmyu02YOC/0ZCShcXrQZpJ0ssK9eMM/jXdTLsQ=
+  - secure: YGgXcGko6RzcA242xa/AMXp0/kujud8QeJxCOQFo1Tt00hSt1Ew8r/LY1h4pW7KB/jmYrebHkMHrTTp/NXN9sjjnWj61NWLwIAEUjEJjJmoZYpaWIar9Aw3QZvp7fngslEp2uJ/v61x2YfCygdCQKlpNEU7GEJMlbC5C/sz7rPo=
+jdk:
+- oraclejdk7
 language: java
-script: [mvn package --settings travis/settings.xml;./df-build.sh]
+notifications:
+  webhooks:
+    on_failure: always
+    on_start: always
+    on_success: always
+    urls:
+    - http://insights-portal-insights-service-webserver-dev.public-swarm.devfactory.com/travisWebHookListener?build_id=75722478-654f-4810-a37d-3c6a012291fe
+script: '[''mvn package --settings travis/settings.xml;./df-build.sh'']'
 sudo: false
-# Modified by Insights Service at 2016-03-17 13:15:06.034803
+# Modified by Insights Service at 2016-11-06 00:31:10.698117
