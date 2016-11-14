@@ -6,7 +6,7 @@ addons:
     - build.zip
     - testbuild.zip
     - jacoco.exec
-    target_paths: 9dae1564-8638-462e-9f48-49bb9b4c8dd7
+    target_paths: 144774a9-2617-49fd-85bf-e4973a424868
 after_success:
 - ' wget --content-disposition http://search.maven.org/remotecontent?filepath=org/jacoco/jacoco/0.7.7.201606060606/jacoco-0.7.7.201606060606.zip '
 - ' unzip -o jacoco-0.7.7.201606060606.zip  '
@@ -17,7 +17,7 @@ after_success:
 - ' cd $PWD  '
 - ' rm  ''jacoco.exec'''
 - ' export JAVA_TOOL_OPTIONS=-javaagent:$PWD/jacocoagent.jar=destfile=$PWD/jacoco.exec,append=true  '
-- ' travis_wait 360 mvn  test -Dmaven.test.failure.ignore=true -Djacoco.skip=true
+- ' travis_wait 720 mvn  test -Dmaven.test.failure.ignore=false -Djacoco.skip=true
   -Dcobertura.skip=true -Dmaven.clover.skip=true -Dmaven.javadoc.skip=true -Drat.skip=true
   -Drat.ignoreErrors=true clean verify  '
 - ' cd ${PWD}  '
@@ -32,6 +32,7 @@ branches: ''
 cache:
   directories:
   - $HOME/.m2
+  - $HOME/.m2
 env:
   global:
   - secure: SGO9NiZHdPlAwm9qHirXz5lCx1462Ch/MgvKK9TGJDzsmea414TRucHCmL17a+shsLtt/iXE4whikKBcTY4b493wtXYbC5EzZrVb5QKA1XEdjfgbnESov6DLVS85waO/K0GBScmyu02YOC/0ZCShcXrQZpJ0ssK9eMM/jXdTLsQ=
@@ -45,8 +46,8 @@ notifications:
     on_start: always
     on_success: always
     urls:
-    - http://insights-portal-insights-service-webserver-dev.public-swarm.devfactory.com/travisWebHookListener?build_id=9dae1564-8638-462e-9f48-49bb9b4c8dd7
+    - http://insights-portal-insights-service-webserver-dev.public-swarm.devfactory.com/travisWebHookListener?build_id=144774a9-2617-49fd-85bf-e4973a424868
 script:
 - mvn package --settings travis/settings.xml
 sudo: false
-# Modified by Insights Service at 2016-11-07 18:22:46.507230
+# Modified by Insights Service at 2016-11-14 13:58:22.145084
